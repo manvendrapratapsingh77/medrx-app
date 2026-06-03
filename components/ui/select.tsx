@@ -1,12 +1,4 @@
 import React from 'react';
-import {
-  Select as SelectPrimitive,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-  SelectSeparator,
-} from '@/components/ui/select'; // shadcn wrapper
 import { cn } from '@/lib/utils';
 
 type Option = {
@@ -23,33 +15,32 @@ interface SelectProps {
 }
 
 /**
- * MedRx styled Select component that forwards to shadcn/ui Select.
- * Uses the primary green for the trigger border/focus.
+ * Simple native select input styled to match the app.
  */
 export const Select: React.FC<SelectProps> = ({
   options,
   placeholder = 'Select... ',
-  value,
+  value = '',
   onValueChange,
   className = '',
 }) => (
-  <SelectPrimitive value={value} onValueChange={onValueChange}>
-    <SelectTrigger
-      className={cn(
-        'w-full rounded-lg border border-border bg-white text-primary focus:outline-none focus:ring-2 focus:ring-primary',
-        className,
-      )}
-    >
-      <SelectValue placeholder={placeholder} />
-    </SelectTrigger>
-    <SelectContent>
-      {options.map((opt) => (
-        <SelectItem key={opt.value} value={opt.value} className="text-primary">
-          {opt.label}
-        </SelectItem>
-      ))}
-    </SelectContent>
-  </SelectPrimitive>
+  <select
+    value={value}
+    onChange={(event) => onValueChange?.(event.target.value)}
+    className={cn(
+      'w-full rounded-lg border border-border bg-white px-3 py-2 text-primary focus:outline-none focus:ring-2 focus:ring-primary',
+      className,
+    )}
+  >
+    <option value="" disabled>
+      {placeholder}
+    </option>
+    {options.map((opt) => (
+      <option key={opt.value} value={opt.value}>
+        {opt.label}
+      </option>
+    ))}
+  </select>
 );
 
 export default Select;

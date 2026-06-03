@@ -1,0 +1,38 @@
+export const mockProducts = [
+  {
+    id: 'prod-001',
+    sku: 'CHEM-001',
+    name: 'Sodium Chloride',
+    category: 'Chemicals',
+    stock: 12500,
+    base_unit: 'g',
+    base_price: 12.5,
+  },
+  {
+    id: 'prod-002',
+    sku: 'CHEM-002',
+    name: 'Ethanol',
+    category: 'Chemicals',
+    stock: 8000,
+    base_unit: 'mL',
+    base_price: 34.75,
+  },
+  {
+    id: 'prod-003',
+    sku: 'LAB-001',
+    name: 'Beaker 250mL',
+    category: 'Laboratory Supplies',
+    stock: 180,
+    base_unit: 'unit',
+    base_price: 95,
+  },
+  {
+    id: 'prod-004',
+    sku: 'CHEM-003',
+    name: 'Hydrochloric Acid',
+    category: 'Chemicals',
+    stock: 3200,
+    base_unit: 'mL',
+    base_price: 22.0,
+  },
+];

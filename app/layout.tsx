@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import DashboardShell from "../components/layout/DashboardShell";
 
 export const metadata: Metadata = {
   title: "MedRx | Inventory & Order Management",
@@ -19,11 +18,8 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
       </head>
-      <body className="bg-off-white">
-        {/* TODO: replace "ADMIN" with actual role from auth session */}
-        <DashboardShell role="ADMIN">
-          {children}
-        </DashboardShell>
+      <body className="bg-background text-foreground antialiased min-h-screen">
+        {children}
       </body>
     </html>
   );

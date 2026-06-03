@@ -50,7 +50,7 @@ export default function InventoryPage() {
             footer={
               <div className="flex justify-end space-x-2">
                 <Button variant="outline">Cancel</Button>
-                <Button variant="primary">Save</Button>
+                <Button variant="default">Save</Button>
               </div>
             }
           >

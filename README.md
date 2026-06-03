@@ -89,11 +89,18 @@ This app stores quantities in normalized base units to avoid mismatched inventor
 
 ## 🧱 Technical Architecture
 
-- **Frontend**: Next.js 14 with app router and React.
-- **Styling**: Tailwind CSS plus custom theme variables.
-- **Auth**: NextAuth with role-based access control.
-- **ORM**: Prisma for PostgreSQL data modelling.
-- **Database**: Neon PostgreSQL for cloud-hosted storage.
+- **Frontend**: Next.js 14 with App Router and React.
+- **Styling**: Tailwind CSS, glowing emerald/teal laboratory accents, and a dark-mode first glassmorphic aesthetic.
+- **Auth**: NextAuth v5 with dynamic role-based access control (RABAC).
+- **ORM**: Prisma for PostgreSQL schema management.
+- **Database**: Neon PostgreSQL cloud-hosted database.
+
+## ☁️ Vercel Deployment
+
+This project is fully optimized for cloud deployment on Vercel:
+- **Build Command**: The build command is pre-configured in `package.json` as `prisma generate && next build`. This ensures that Prisma Client code bindings are compiled before building the Next.js production bundle.
+- **Environment Variables**: Add `DATABASE_URL` (Neon Postgres ssl connection URL) and `AUTH_SECRET` (NextAuth secret token) to your Vercel Project settings.
+- **Prisma Seed**: To run the database seed in production, you can execute `npx prisma db seed` via Vercel CLI or manual database console terminal.
 
 ### Key data model entities
 - `User`: Stores authentication and role metadata.

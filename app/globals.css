@@ -1,26 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import "tw-animate-css";
+
 :root {
-  --primary: #10b981; /* green accent */
-  --primary-foreground: #ffffff;
-  --secondary: #f8fafc; /* light background */
-  --secondary-foreground: #111827; /* dark text */
+  --primary: #10b981; /* emerald green accent */
+  --primary-foreground: #000000;
+  --secondary: #0f172a; /* deep slate card bg */
+  --secondary-foreground: #f8fafc; /* light text */
   --accent: #10b981; /* same green */
-  --accent-foreground: #ffffff;
-  --background: #f8fafc; /* off-white */
-  --foreground: #111827; /* dark */
-  --card: #ffffff;
-  --card-foreground: #111827;
-  --border: #e5e7eb;
-  --input: #f3f4f6;
+  --accent-foreground: #000000;
+  --background: #070a13; /* deep navy-black space background */
+  --foreground: #f8fafc; /* off-white text */
+  --card: #0d1324; /* glass-like navy card */
+  --card-foreground: #f8fafc;
+  --border: rgba(255, 255, 255, 0.08); /* subtle semi-transparent border */
+  --input: rgba(255, 255, 255, 0.04);
   --ring: #10b981;
   --radius: 0.75rem;
-  --glass: rgba(255, 255, 255, 0.03);
-  --glass-border: rgba(0, 0, 0, 0.1);
-  --bg-main: #f8fafc;
-  --bg-card: #ffffff;
-  --bg-card-hover: #f1f5f9;
-  --text-primary: #111827;
-  --text-secondary: #64748b;
-  --primary-glow: rgba(16, 185, 129, 0.3);
+  --glass: rgba(13, 19, 36, 0.65);
+  --glass-border: rgba(255, 255, 255, 0.06);
+  --bg-main: #070a13;
+  --bg-card: #0d1324;
+  --bg-card-hover: #161f38;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --primary-glow: rgba(16, 185, 129, 0.25);
   --primary-rgb: 16, 185, 129;
 }
 

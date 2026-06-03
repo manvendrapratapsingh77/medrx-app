@@ -1,14 +1,6 @@
-import React from 'react';
-import {
-  Dialog,
-  DialogTrigger,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-  DialogClose,
-} from '@/components/ui/dialog'; // shadcn Dialog wrapper
+"use client";
+
+import * as React from 'react';
 import { Button } from '@/components/ui/button';
 
 interface ModalProps {
@@ -34,37 +26,60 @@ interface ModalProps {
   footer?: React.ReactNode;
 }
 
-/**
- * Reusable modal (dialog) component using shadcn/ui Dialog.
- * - Styled with MedRx primary colors.
- * - Accepts custom trigger button label and optional footer.
- */
 export const Modal: React.FC<ModalProps> = ({
   triggerLabel,
   title,
   description,
   children,
   footer,
-}) => (
-  <Dialog>
-    <DialogTrigger asChild>
-      <Button variant="outline" className="text-primary border-primary hover:bg-primary-light">
+}) => {
+  const [open, setOpen] = React.useState(false);
+
+  return (
+    <>
+      <Button
+        variant="outline"
+        className="text-primary border-primary hover:bg-primary-light"
+        onClick={() => setOpen(true)}
+      >
         {triggerLabel}
       </Button>
-    </DialogTrigger>
-    <DialogContent className="sm:max-w-lg">
-      <DialogHeader>
-        <DialogTitle className="text-primary">{title}</DialogTitle>
-        {description && (
-          <DialogDescription className="text-secondary">
-            {description}
-          </DialogDescription>
-        )}
-      </DialogHeader>
-      <div className="py-4">{children}</div>
-      {footer && <DialogFooter>{footer}</DialogFooter>}
-    </DialogContent>
-  </Dialog>
-);
+
+      {open ? (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
+          role="dialog"
+          aria-modal="true"
+          onClick={() => setOpen(false)}
+        >
+          <div
+            className="relative w-full max-w-lg overflow-hidden rounded-3xl bg-white p-6 shadow-2xl"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h2 className="text-xl font-semibold text-primary">{title}</h2>
+                {description && (
+                  <p className="mt-2 text-sm text-secondary">{description}</p>
+                )}
+              </div>
+              <button
+                type="button"
+                className="text-secondary transition hover:text-primary"
+                onClick={() => setOpen(false)}
+                aria-label="Close modal"
+              >
+                ×
+              </button>
+            </div>
+
+            <div className="mt-6">{children}</div>
+            {footer && <div className="mt-6 flex justify-end gap-2">{footer}</div>}
+          </div>
+        </div>
+      ) : null}
+    </>
+  );
+};
 
 export default Modal;

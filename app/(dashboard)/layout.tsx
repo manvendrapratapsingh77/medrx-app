@@ -1,16 +1,9 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { 
-  Beaker, 
-  LayoutDashboard, 
-  Package, 
-  ClipboardList, 
-  Users, 
-  LogOut,
-  ChevronRight
-} from "lucide-react";
+import { Beaker } from "lucide-react";
 import { SignOutButton } from "@/components/SignOutButton";
+import DashboardNavigation from "@/components/layout/DashboardNavigation";
 
 export default async function DashboardLayout({
   children,
@@ -26,49 +19,39 @@ export default async function DashboardLayout({
   const user = session.user as any;
   const role = user.role;
 
-  const links = [
-    { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-    { name: "Products", href: "/products", icon: Package },
-    { name: "Orders", href: "/orders", icon: ClipboardList },
-  ];
-
-  if (role === "ADMIN") {
-    links.push({ name: "Users", href: "/admin/users", icon: Users });
-  }
-
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="flex min-h-screen bg-background text-foreground relative overflow-hidden">
+      {/* Dynamic Background Glows */}
+      <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-primary/5 blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] rounded-full bg-blue-500/5 blur-[120px] pointer-events-none" />
+
       {/* Sidebar */}
-      <aside className="w-64 glass border-r h-screen sticky top-0 flex flex-col p-6">
-        <div className="flex items-center gap-2 mb-10">
-          <Beaker className="text-accent" size={28} />
-          <span className="font-bold text-lg">AasaMedChem</span>
+      <aside className="w-66 glass border-r border-glass h-screen sticky top-0 flex flex-col p-6 z-20">
+        <div className="flex items-center gap-3 mb-10 px-2">
+          <div className="h-10 w-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shadow-[0_0_15px_rgba(16,185,129,0.1)]">
+            <Beaker size={22} className="animate-pulse" />
+          </div>
+          <div className="flex flex-col">
+            <span className="font-bold text-base leading-tight tracking-wide bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
+              AasaMedChem
+            </span>
+            <span className="text-[10px] text-primary/70 font-semibold uppercase tracking-widest leading-none mt-0.5">
+              LAB SUITE
+            </span>
+          </div>
         </div>
 
-        <nav className="flex-1 flex flex-col gap-2">
-          {links.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="flex items-center justify-between p-3 rounded-lg hover:bg-glass transition-colors group"
-            >
-              <div className="flex items-center gap-3">
-                <link.icon size={20} className="text-muted group-hover:text-accent" />
-                <span className="text-sm font-medium">{link.name}</span>
-              </div>
-              <ChevronRight size={14} className="text-muted opacity-0 group-hover:opacity-100" />
-            </Link>
-          ))}
-        </nav>
+        {/* Client Navigation */}
+        <DashboardNavigation role={role} />
 
-        <div className="pt-6 border-t border-glass">
+        <div className="pt-6 mt-6 border-t border-glass">
           <div className="flex flex-col gap-4">
-            <div className="px-3">
-              <p className="text-xs text-muted">Signed in as</p>
-              <p className="text-sm font-medium truncate">{user.email}</p>
-              <p className="text-[10px] text-accent font-bold uppercase mt-1 tracking-wider">
+            <div className="px-3 py-2.5 rounded-xl bg-white/5 border border-white/5">
+              <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">Signed in as</p>
+              <p className="text-sm font-medium truncate mt-0.5 text-text-primary">{user.email}</p>
+              <span className="inline-block text-[9px] bg-primary/15 text-primary border border-primary/20 font-extrabold uppercase px-2 py-0.5 rounded-md mt-2 tracking-widest">
                 {role}
-              </p>
+              </span>
             </div>
             <SignOutButton />
           </div>
@@ -76,20 +59,26 @@ export default async function DashboardLayout({
       </aside>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col">
-        <header className="h-16 glass border-b flex items-center justify-between px-8 sticky top-0 z-10">
-          <h1 className="text-lg font-semibold capitalize">
-            {role.toLowerCase()} Overview
+      <div className="flex-1 flex flex-col min-w-0 z-10">
+        <header className="h-16 glass border-b border-glass flex items-center justify-between px-8 sticky top-0 z-10">
+          <h1 className="text-base font-bold tracking-wide uppercase text-primary/80">
+            {role.toLowerCase()} PANEL
           </h1>
-          <div className="flex items-center gap-4">
-            <div className="h-8 w-8 rounded-full bg-accent flex items-center justify-center text-accent-foreground font-bold text-xs">
+          <div className="flex items-center gap-3">
+            <div className="flex flex-col text-right hidden sm:flex">
+              <span className="text-xs font-semibold">{user.email.split('@')[0]}</span>
+              <span className="text-[9px] text-muted-foreground uppercase tracking-widest">{role}</span>
+            </div>
+            <div className="h-9 w-9 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-bold text-sm shadow-[0_0_15px_rgba(16,185,129,0.1)]">
               {user.email[0].toUpperCase()}
             </div>
           </div>
         </header>
 
-        <main className="p-8 flex-1">
-          {children}
+        <main className="p-8 flex-1 overflow-y-auto">
+          <div className="max-w-7xl mx-auto w-full animate-in fade-in duration-500">
+            {children}
+          </div>
         </main>
       </div>
     </div>
