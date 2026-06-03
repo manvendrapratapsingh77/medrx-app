@@ -1,0 +1,79 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  SELLER
+  BUYER
+}
+
+enum Dimension {
+  weight
+  volume
+  count
+}
+
+enum OrderStatus {
+  QUOTATION
+  CONFIRMED
+  CANCELLED
+}
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  password_hash String
+  role          Role      @default(BUYER)
+  products      Product[] @relation("SellerProducts")
+  orders        Order[]   @relation("BuyerOrders")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Product {
+  id                String      @id @default(uuid())
+  name              String
+  description       String?
+  category          String
+  sku               String      @unique
+  dimension         Dimension
+  base_unit         String      // 'g', 'mL', or 'unit'
+  base_price        Decimal     @db.Decimal(15, 4) // INR per base unit
+  stock_in_base_unit Decimal     @db.Decimal(20, 6) // stored in g / mL / unit
+  seller_id         String
+  seller            User        @relation("SellerProducts", fields: [seller_id], references: [id])
+  order_items       OrderItem[]
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+}
+
+model Order {
+  id          String      @id @default(uuid())
+  buyer_id    String
+  buyer       User        @relation("BuyerOrders", fields: [buyer_id], references: [id])
+  status      OrderStatus @default(QUOTATION)
+  total_inr   Decimal     @db.Decimal(15, 4)
+  items       OrderItem[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model OrderItem {
+  id                String  @id @default(uuid())
+  order_id          String
+  order             Order   @relation(fields: [order_id], references: [id])
+  product_id        String
+  product           Product @relation(fields: [product_id], references: [id])
+  ordered_unit      String  // e.g. 'kg'
+  ordered_qty       Decimal @db.Decimal(20, 6)
+  base_unit         String  // e.g. 'g'
+  qty_in_base_unit  Decimal @db.Decimal(20, 6)
+  unit_price_inr    Decimal @db.Decimal(15, 4)
+  line_total_inr    Decimal @db.Decimal(15, 4)
+}
