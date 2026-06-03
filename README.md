@@ -1,85 +1,114 @@
 # 🧪 AasaMedChem — Inventory & Order Management System
 
-A premium Inventory & Order Management System built with Next.js 14, Neon PostgreSQL, and Prisma ORM.
+AasaMedChem is a modern, chemical inventory and quotation system built for laboratories, suppliers, and procurement managers. It provides a complete workflow for managing products, generating quotations, and approving orders with unit-aware quantity handling.
 
-## 📦 Core Unit System & Storage Strategy
+## 🌟 What This Website Does
 
-This system implements a precision-focused unit storage strategy to ensure consistency across all dimensions.
+This application brings together three core user experiences:
+- **Buyers** can browse available chemicals, select quantity and units, and submit requests as quotations.
+- **Sellers** can add products, manage stock, and review orders for the chemicals they provide.
+- **Admins** can oversee the full platform, approve or cancel orders, and manage user roles.
 
-### Storage Logic
-- **Weight**: All values stored internally in **grams (g)**.
-- **Volume**: All values stored internally in **milliliters (mL)**.
-- **Count**: Stored as **unit/item** (no conversion).
-- **Price**: Per base unit (INR per g, per mL, or per unit).
+The app is designed to preserve measurement accuracy and reduce errors by storing all quantities in a unified base form while allowing flexible unit input in the UI.
 
-### Conversion Constants
-| Unit | Factor (to base) | Dimension |
-|------|------------------|-----------|
-| kg   | 1000             | Weight    |
-| g    | 1                | Weight    |
-| L    | 1000             | Volume    |
-| mL   | 1                | Volume    |
-| unit | 1                | Count     |
+## 🧠 Unit & Pricing Intelligence
 
-### Where Conversions Happen
-- **UI (Buyer Dashboard)**: Live price preview converts `input_qty * CONVERSIONS[unit]` to show total in INR.
-- **Order Placement**: Converted quantity is saved in `qty_in_base_unit` column.
-- **Stock Management**: Stock deduction occurs in base units (g, mL, unit) upon Admin confirmation.
+AasaMedChem treats units as first-class citizens throughout the workflow:
 
-## 🗄️ Database Schema Justification
+### Internal base units
+- Weight values are stored in **grams (g)**.
+- Volume values are stored in **milliliters (mL)**.
+- Count values are stored as **individual units/items**.
+- Prices are expressed per base unit, such as INR per g, INR per mL, or INR per unit.
 
-- **Prisma Schema**: Uses `Decimal @db.Decimal(15, 4)` for prices and `(20, 6)` for quantities to prevent floating-point errors.
-- **Relationships**: 
-  - `User -> Product` (One-to-Many): Sellers own products.
-  - `Order -> OrderItem` (One-to-Many): Quotations contain multiple products.
-  - `User -> Order` (One-to-Many): Buyers place quotations.
+### Supported conversions
+| Unit | Base Equivalent | Dimension |
+|------|-----------------|-----------|
+| kg   | 1000 g          | Weight    |
+| g    | 1 g             | Weight    |
+| L    | 1000 mL         | Volume    |
+| mL   | 1 mL            | Volume    |
+| unit | 1 unit          | Count     |
 
-## 🚀 Local Setup & Neon Connection
+### Why this matters
+- Buyers enter quantities naturally, for example `2.5 kg` or `750 mL`.
+- The UI calculates totals instantly and displays the correct INR amount.
+- The backend stores a normalized `qty_in_base_unit` so stock management and reporting stay accurate.
 
-1. **Clone & Install**:
+## 🧱 Architecture & Data Model
+
+The app uses a clean Next.js 14 frontend with server-side API routes, Prisma ORM, and PostgreSQL for persistent storage.
+
+### Key relationships
+- `User` owns products when registered as a seller.
+- `Product` records include stock, unit dimension, and base price.
+- `Order` groups buyer quotations and connects to one or more `OrderItem` entries.
+- `OrderItem` preserves both the requested quantity/unit and the normalized base quantity.
+
+### Database precision
+Prisma schema values use decimal fields with high precision to avoid floating-point inaccuracies:
+- Prices: `Decimal @db.Decimal(15, 4)`
+- Quantities: `Decimal @db.Decimal(20, 6)`
+
+## 🧭 Main User Experiences
+
+### Buyer Dashboard
+- Search products by name or category.
+- Choose quantity and unit directly from the UI.
+- See a live total price preview before submitting a quotation.
+- Submit the request and wait for seller/admin confirmation.
+
+### Seller Dashboard
+- Add or update products with chemical details, stock, and measurement dimension.
+- Monitor available inventory in normalized base units.
+- View incoming orders and decide whether to fulfil or reject them.
+
+### Admin Dashboard
+- Review all orders and confirm or cancel quotations.
+- Manage users and roles across buyers, sellers, and admins.
+- Approve orders with automatic stock deduction for confirmed requests.
+
+## 🚀 Local Setup
+
+1. Clone the repository and install dependencies:
    ```bash
    npm install
    ```
 
-2. **Environment Setup** (.env):
+2. Create a `.env` file with your database and auth settings:
    ```env
    DATABASE_URL="postgresql://user:password@neon-db-url:5432/aasamedchem?sslmode=require"
    AUTH_SECRET="your-secret"
    ```
 
-3. **Database Migration**:
+3. Generate Prisma client and push your schema:
    ```bash
    npx prisma generate
    npx prisma db push
    npm run seed
    ```
 
-4. **Run Dev Server**:
+4. Start the development server:
    ```bash
    npm run dev
    ```
 
-## 👥 Test Login Credentials
+5. Open `http://localhost:3000` in your browser.
 
-| Role | Email | Password |
-|------|-------|----------|
-| Admin | admin@aasamedchem.com | admin123 |
-| Seller | seller@aasamedchem.com | seller123 |
-| Buyer | buyer@aasamedchem.com | buyer123 |
+## 🔐 Demo Credentials
 
-## 🔄 User Flows
+| Role   | Email                     | Password   |
+|--------|---------------------------|------------|
+| Admin  | admin@aasamedchem.com     | admin123   |
+| Seller | seller@aasamedchem.com    | seller123  |
+| Buyer  | buyer@aasamedchem.com     | buyer123   |
 
-### Buyer Flow
-1. **Browse**: Search and filter products by name or category.
-2. **Configure**: Select quantity and unit (e.g., 2.5 kg).
-3. **Quotation**: View live INR preview and click "Add to Cart" to submit a quotation.
+## 📝 Notes
 
-### Seller Flow
-1. **Manage**: Add new chemicals with dimensions (Weight/Volume/Count).
-2. **Monitor**: View current stock levels in base units (e.g., 5000g).
-3. **View Orders**: See orders placed for your products.
+- The system is designed for inventory accuracy and scalable quotation handling.
+- All unit conversions are handled consistently so stock updates never lose precision.
+- The product and order workflows are intentionally separated for clear role-based access.
 
-### Admin Flow
-1. **Approve**: Confirm or Cancel quotations.
-2. **Confirm**: Confirming an order automatically deducts the calculated base unit quantity from product stock.
-3. **Users**: Oversee all platform users and roles.
+## ❤️ Contribution
+
+If you want to extend the application, add new product categories, enhance authentication, or build richer analytics, this README is the best place to start.
